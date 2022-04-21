@@ -9,6 +9,14 @@ services:
     volumes:
       - mongo_data:/data/db  
 
+  orderdb:
+    container_name: orderdb 
+    environment:
+        ACCEPT_EULA: "Y"
+    restart: always
+    ports:
+        - "1433:1433"
+
   catalog.api:
     container_name: catalog.api
     environment:
@@ -18,3 +26,15 @@ services:
       - catalogdb
     ports:
       - "8000:80"
+
+
+  ordering.api:
+    container_name: ordering.api
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - "ConnectionStrings:OrderingConnectionString=Data Source=DESKTOP-7IFEN06\\SQLEXPRESS;Initial Catalog=OrderDb;Integrated Security=True"
+    depends_on:
+      - orderdb
+    ports:
+      - "8001:80"
+
